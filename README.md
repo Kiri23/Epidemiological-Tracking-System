@@ -6,7 +6,7 @@ This the Solution to the exercise of Epidemiological Tracking System. It allows 
 ## Getting Started 
 
 ### Prerequisities 
-1. Have .net installed
+1. Have .NET 8.0 installed
 2. Download Visual studio code or your favorite editor
 
 ### Installation 
