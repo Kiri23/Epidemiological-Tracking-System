@@ -49,7 +49,7 @@ namespace api.Controllers
         {
             if (id != individual.Id)
             {
-                return BadRequest();
+                return BadRequest("The ID in the URL does not match the ID in the request body.");
             }
             _context.Entry(individual).State = EntityState.Modified;
             try
@@ -58,15 +58,18 @@ namespace api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
+                // Throw not found error if the individual was deleted by another proccess while trying to update it. 
                 if (!_context.Individuals.Any(e => e.Id == id))
                 {
                     return NotFound();
                 }
                 else
                 {
+                    // For simplicity we are just throwing the error if a concurrency conflict happen
                     throw;
                 }
             }
+            // For simplicity we are returning non content but the individual that got updated could be sent too.
             return NoContent();
         }
         [HttpDelete("{id}")]
