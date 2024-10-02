@@ -58,16 +58,18 @@ namespace api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                // Throw not found error if the individual was deleted by another proccess while trying to update it. 
-                if (!_context.Individuals.Any(e => e.Id == id))
+                // Reload the entity to see if it still exists
+                var existingIndividual = await _context.Individuals.FindAsync(id);
+                if (existingIndividual == null)
                 {
-                    return NotFound();
+                    return NotFound($"An individual with ID {id} no longer exists.");
                 }
                 else
                 {
-                    // For simplicity we are just throwing the error if a concurrency conflict happen
-                    throw;
+                    // Entity exists but has been modified by another process
+                    return Conflict("The individual has been modified by another process.");
                 }
+
             }
             // For simplicity we are returning non content but the individual that got updated could be sent too.
             return NoContent();
